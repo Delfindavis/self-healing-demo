@@ -2,26 +2,47 @@ import time
 import requests
 import subprocess
 
-URL = "http://localhost:5000/health"
-failures = 0
+# Services to monitor
+services = {
+    "webapp-main": "http://localhost:5000/health",
+    "webapp-auth": "http://localhost:5001/health",
+    "webapp-payment": "http://localhost:5002/health"
+}
+
+# Failure counters
+failures = {
+    "webapp-main": 0,
+    "webapp-auth": 0,
+    "webapp-payment": 0
+}
+
+FAILURE_THRESHOLD = 3
+CHECK_INTERVAL = 10  # seconds
+
+
+def restart_container(container_name):
+    print(f"🔄 Restarting container: {container_name}")
+    subprocess.run(["docker", "restart", container_name])
+
 
 while True:
-    try:
-        r = requests.get(URL, timeout=3)
-        if r.status_code == 200:
-            print("App is UP")
-            failures = 0
-        else:
-            failures += 1
-    except:
-        print("App is DOWN")
-        failures += 1
+    print("\n🔍 Checking services status...")
 
-    print("Failure count:", failures)
+    for service, url in services.items():
+        try:
+            response = requests.get(url, timeout=3)
+            if response.status_code == 200:
+                print(f"✅ {service} : UP")
+                failures[service] = 0
+            else:
+                raise Exception("Non-200 response")
 
-    if failures >= 3:
-        print("Restarting container...")
-        subprocess.run(["docker", "restart", "webapp"])
-        failures = 0
+        except Exception:
+            failures[service] += 1
+            print(f"❌ {service} : DOWN (failure {failures[service]})")
 
-    time.sleep(10)
+            if failures[service] >= FAILURE_THRESHOLD:
+                restart_container(service)
+                failures[service] = 0
+
+    time.sleep(CHECK_INTERVAL)
