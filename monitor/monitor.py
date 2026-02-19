@@ -2,6 +2,48 @@ import time
 import requests
 import subprocess
 
+from datetime import datetime
+from db import init_db, log_check
+from uptime import calculate_uptime
+
+services = {
+    "webapp-main": "http://localhost:5000/health",
+    "webapp-auth": "http://localhost:5001/health",
+    "webapp-payment": "http://localhost:5002/health"
+}
+INTERVAL = 10  
+
+init_db() 
+
+check_count = 0 
+
+while True:
+    try:
+        r = requests.get(URL, timeout=5)
+        ok = (r.status_code == 200)
+        ts = datetime.utcnow().isoformat()
+
+        # Log each health check
+        log_check(ts, r.status_code, int(ok))
+        print(f"[{ts}] Status: {r.status_code}, OK={ok}")
+
+    except Exception as e:
+        ts = datetime.utcnow().isoformat()
+        log_check(ts, 0, 0)
+        print(f"[{ts}] Error: {e}")
+
+    # Increment total check counter
+    check_count += 1
+
+    # ✅ Print uptime every 10 checks
+    if check_count % 10 == 0:
+        uptime = calculate_uptime()
+        print(f"Current uptime: {uptime:.2f}%")
+
+    time.sleep(INTERVAL)
+
+
+
 # Services to monitor
 services = {
     "webapp-main": "http://localhost:5000/health",
