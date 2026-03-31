@@ -1,0 +1,43 @@
+services:
+
+  webapp-main:
+    build: ./webapps/webapp-main
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - SERVICE_NAME=webapp-main
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health', timeout=2)"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  webapp-auth:
+    build: ./webapps/webapp-auth
+    restart: unless-stopped
+    ports:
+      - "5001:5000"
+    environment:
+      - SERVICE_NAME=webapp-auth
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health', timeout=2)"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  webapp-payment:
+    build: ./webapps/webapp-payment
+    restart: unless-stopped
+    ports:
+      - "5002:5000"
+    environment:
+      - SERVICE_NAME=webapp-payment
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/health', timeout=2)"]
+      interval: 10s
+      timeout: 3s
+      retries: 3
+      start_period: 5s

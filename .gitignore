@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+.venv/
+venv/
+
+monitor/monitor.db
+monitor/checks.csv
+monitor/restarts.csv
+monitor/email_logs.csv
+monitor/uptime_report.txt
