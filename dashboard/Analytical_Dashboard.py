@@ -142,8 +142,8 @@ tr:last-child td{border-bottom:none}tr:hover td{background:#0d1828}
       <div class="page-sub" id="last-updated">Loading...</div>
     </div>
     <div class="top-actions">
-      <a href="http://localhost:7000" target="_blank">
-        <button class="btn-outline">⚙ Control Panel</button>
+      <a href="#" onclick="return false;">
+        <button class="btn-outline">🧪 Use `python test_scenarios.py`</button>
       </a>
       <button class="btn-primary" onclick="loadAll()">↻ Refresh</button>
     </div>
