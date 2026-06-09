@@ -1,6 +1,6 @@
 # Self-Healing Demo
 
-This demo runs three Flask microservices, a monitor that auto-restarts failing services, and an analytics dashboard for developer visibility.
+This demo runs three Flask Microservices, a monitor that auto-restarts failing services, and an analytics dashboard for developer visibility.
 
 ## Run
 
